@@ -19,7 +19,11 @@ public class UsuarioService {
     }
 
     public UsuarioModel cadastrar(UsuarioModel usuarioModel) {
+        if(usuarioRepository.existsById(usuarioModel.getId())){
+            throw new RuntimeException("Usuario já cadastrado");
+        }else {
             usuarioRepository.save(usuarioModel);
             return usuarioModel;
+        }
     }
 }

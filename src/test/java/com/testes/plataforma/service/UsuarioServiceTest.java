@@ -5,39 +5,42 @@ import com.testes.plataforma.repository.UsuarioRepository;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
+import org.mockito.Mock;
 import org.mockito.Mockito;
+import org.mockito.MockitoAnnotations;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
 
 import java.util.List;
 
+@SpringBootTest
 public class UsuarioServiceTest {
 
-
-    @Autowired
-    private UsuarioService usuarioService;
+    @Mock
+    UsuarioService usuarioService;
 
     @MockBean
-    private UsuarioRepository usuarioRepository;
+    UsuarioRepository usuarioRepository;
 
-    private UsuarioModel usuario;
+    private UsuarioModel usuarioModel;
 
     @BeforeEach
-    private void usuario(){
-        usuario = new UsuarioModel(1L, "Joyce", "1234");
-    }
-
-    @Test
-    public void testarOCadastro(){
-        Mockito.when(usuarioRepository.findById(Mockito.anyLong()));
-        usuarioRepository.save(usuario);
-        Mockito.verify(usuarioRepository, Mockito.times(1)).save(usuario);
+    private void inicializadora(){
+        MockitoAnnotations.openMocks(this);
+        usuarioModel = new UsuarioModel(1L, "Joyce", "1234");
     }
 
     @Test
     void exibirUsuariosTest(){
-        UsuarioService mockUsuario = Mockito.mock(UsuarioService.class);
-        List<UsuarioModel> todosOsUsuarios = mockUsuario.todosUsuarios();
+        List<UsuarioModel> todosOsUsuarios = usuarioService.todosUsuarios();
         Assertions.assertTrue(todosOsUsuarios.isEmpty());
+    }
+
+    @Test
+    public void testeCadastroFuncionando(){
+        Mockito.when(usuarioRepository.existsById(Mockito.anyLong())).thenReturn(true);
+        usuarioRepository.save(usuarioModel);
+        Mockito.verify(usuarioRepository, Mockito.times(1)).save(usuarioModel);
     }
 }
